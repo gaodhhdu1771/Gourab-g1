@@ -101,95 +101,147 @@
             if(role) {
                 document.getElementById('authUI').style.display = 'none';
                 document.getElementById('appUI').style.display = 'block';
-                document.getElementById('menuTrigger').style.display = 'block';
-                if(role === 'Admin') document.getElementById('adminLink').style.display = 'block';
-            }
-        };
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GOURAB CHECKER v1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root { --gold: #ffcc00; --bg: #030712; --card: #111827; --green: #10b981; --red: #ef4444; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; }
+        .navbar { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: #000; transition: 0.5s; z-index: 2000; border-left: 1px solid var(--gold); }
+        .sidebar.active { right: 0; }
+        .close-btn { font-size: 35px; color: var(--gold); cursor: pointer; padding: 15px; display: block; text-align: right; }
+        .menu-item { padding: 15px 25px; display: block; color: #ccc; text-decoration: none; border-bottom: 1px solid #222; cursor: pointer; }
+        .container { padding: 20px; max-width: 800px; margin: auto; }
+        .box { background: var(--card); padding: 25px; border-radius: 12px; margin-top: 20px; border: 1px solid #333; }
+        textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; }
+        .btn-main { width: 100%; padding: 14px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .res-line { padding: 8px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
+        .copy-btn { padding: 5px 10px; background: #333; color: var(--gold); border: 1px solid var(--gold); border-radius: 4px; cursor: pointer; font-size: 12px; }
+    </style>
+</head>
+<body>
 
-        function loadTool(type) {
-            const content = document.getElementById('toolContent');
-            const res = document.getElementById('results');
-            document.getElementById('copyPanel').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('checkerBox').style.display = 'block';
-            res.innerHTML = '';
+    <div class="navbar">
+        <div style="color: var(--gold); font-size: 20px; font-weight: bold;">GOURAB CHECKER v1</div>
+        <div id="menuBtn" onclick="toggleMenu()" style="font-size: 25px; cursor: pointer; display: none;">☰</div>
+    </div>
 
-            if(type === 'ip') {
-                document.getElementById('toolTitle').innerText = "IP PRIVACY (WHOER STYLE)";
-                content.innerHTML = `<button class="btn-main" onclick="checkIP()">Reconnect & Scan IP</button>`;
-            } else {
-                document.getElementById('toolTitle').innerText = type.toUpperCase() + " CHECKER";
-                content.innerHTML = `<textarea id="inputData" rows="8" placeholder="Format: Data|Pass or List..."></textarea>
-                <button class="btn-main" onclick="runScan('${type}')">Start Super Scan</button>`;
-            }
-            toggleMenu();
+    <div id="sidebar" class="sidebar">
+        <span class="close-btn" onclick="toggleMenu()">×</span>
+        <a class="menu-item" onclick="loadTool('gmail')">📧 Gmail Slit</a>
+        <a class="menu-item" onclick="loadTool('ip')">🌐 Ip Slit</a>
+        <a class="menu-item" onclick="loadTool('fb')">🔵 Facebook Slit</a>
+        <a class="menu-item" onclick="loadTool('tg')">✈️ Tg Slit</a>
+        <a class="menu-item" onclick="logout()" style="color: var(--red);">🚪 Logout</a>
+    </div>
+
+    <div class="container">
+        <div id="welcomeUI" class="box" style="display:none; text-align:center;">
+            <h2 style="color: var(--gold);">স্বাগতম!</h2>
+            <p>গৌরব ভাইয়ের এই সাইটে আপনাকে স্বাগতম। এই সাইটে আপনি আপনার প্রয়োজনের সবকিছু পেয়ে যাবেন। ভদ্রতার সাথে কাজ করুন এবং কোন সমস্যা হলে গৌরব ভাইকে বলুন। ধন্যবাদ।</p>
+            <button class="btn-main" onclick="startApp()">কাজ শুরু করুন</button>
+        </div>
+
+        <div id="checkerUI" style="display:none;">
+            <div class="box">
+                <h3 id="toolTitle" style="color: var(--gold);">Select Tool From Menu</h3>
+                <div id="toolBody"></div>
+                <div id="results" style="margin-top: 20px;"></div>
+                <div id="copyActions" style="display:none; margin-top: 15px; display: flex; gap: 5px; flex-wrap: wrap;">
+                    <button class="copy-btn" onclick="copyResult('LIVE')">Copy Good</button>
+                    <button class="copy-btn" onclick="copyResult('DIE')">Copy Bad</button>
+                    <button class="copy-btn" onclick="copyResult('VERIFY')">Copy Verify</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let scanResults = [];
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+        
+        function startApp() {
+            document.getElementById('welcomeUI').style.display = 'none';
+            document.getElementById('checkerUI').style.display = 'block';
+            document.getElementById('menuBtn').style.display = 'block';
         }
 
-        function checkIP() {
+        // IP Slit (Whoer Style)
+        async function loadIP() {
             const res = document.getElementById('results');
-            res.innerHTML = "🌀 <b>Reconnecting Server...</b>";
-            setTimeout(() => {
-                const now = new Date();
-                const ip = `103.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*254)+1}`;
-                res.innerHTML = `<div style="color:var(--gold); line-height:1.6; border-left:3px solid var(--gold); padding-left:15px;">
-                    ✅ <b>Status:</b> 100% Protected<br>
-                    🌐 <b>IP Address:</b> ${ip} <span style="cursor:pointer;" onclick="navigator.clipboard.writeText('${ip}')">📋</span><br>
-                    📍 <b>Country:</b> Bangladesh 🇧🇩<br>
-                    🕒 <b>Connect Time:</b> ${now.toLocaleTimeString()}<br>
-                    ISP: Amber IT | Proxy: No detected
-                </div>`;
-            }, 1800);
+            res.innerHTML = "🌀 <b>Fetching IP Details...</b>";
+            const data = await fetch('https://ipapi.co/json/').then(r => r.json());
+            const now = new Date();
+            
+            res.innerHTML = `
+                <div class="box" style="border-color: var(--gold);">
+                    <div class="res-line"><span>Country: ${data.country_name}</span> <button class="copy-btn" onclick="copyText('${data.country_name}')">Copy</button></div>
+                    <div class="res-line"><span>Region: ${data.region}</span> <button class="copy-btn" onclick="copyText('${data.region}')">Copy</button></div>
+                    <div class="res-line"><span>Timezone: ${data.timezone}</span></div>
+                    <div class="res-line"><span>Connect Time: ${now.toLocaleTimeString()}</span></div>
+                    <div class="res-line"><span>Device: ${navigator.userAgent.includes('iPhone') ? 'iPhone (iOS)' : 'Android'}</span></div>
+                    <div class="res-line"><span>Location: ${data.city}, ${data.country}</span> <button class="copy-btn" onclick="copyText('${data.city}')">Copy</button></div>
+                    <div class="res-line"><span>VPN/Proxy: ${data.org.includes('VPN') ? 'YES' : 'NO'}</span></div>
+                </div>
+            `;
         }
 
-        function runScan(mode) {
+        async function runScan(type) {
             const lines = document.getElementById('inputData').value.split('\n');
-            const res = document.getElementById('results');
-            res.innerHTML = "🚀 <b>Scanning Started...</b>";
-            goodArr = []; badArr = []; verifyArr = []; existArr = [];
+            const resDiv = document.getElementById('results');
+            resDiv.innerHTML = "🚀 Scanning Started...";
+            scanResults = [];
 
-            setTimeout(() => {
-                res.innerHTML = '';
-                lines.forEach(line => {
-                    if(line.trim()) {
-                        const rand = Math.random();
-                        let status = rand > 0.6 ? 'good' : (rand > 0.3 ? 'bad' : (rand > 0.1 ? 'verify' : 'notexist'));
-                        if(status === 'good') { goodArr.push(line); res.innerHTML += `<div style="color:var(--green)">✓ ${line} [LIVE]</div>`; }
-                        else if(status === 'bad') { badArr.push(line); res.innerHTML += `<div style="color:var(--red)">× ${line} [DIE]</div>`; }
-                        else if(status === 'verify') { verifyArr.push(line); res.innerHTML += `<div style="color:cyan">? ${line} [VERIFY]</div>`; }
-                        else { existArr.push(line); res.innerHTML += `<div style="color:#8b5cf6">! ${line} [NOT EXIST]</div>`; }
-                    }
-                });
-                document.getElementById('copyPanel').style.display = 'flex';
-            }, 1200);
+            for (let line of lines) {
+                if (line.trim()) {
+                    const response = await fetch('/api/check', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ inputData: line.trim(), type: type })
+                    });
+                    const result = await response.json();
+                    scanResults.push({ data: line, status: result.status });
+                    
+                    let color = result.status === 'LIVE' ? 'var(--green)' : 'var(--red)';
+                    resDiv.innerHTML += `<div style="color:${color}">[${result.status}] ${line}</div>`;
+                }
+            }
+            document.getElementById('copyActions').style.display = 'flex';
         }
 
-        function copy(type) {
-            let data = type === 'good' ? goodArr : (type === 'bad' ? badArr : (type === 'verify' ? verifyArr : existArr));
-            navigator.clipboard.writeText(data.join('\n'));
-            alert(type.toUpperCase() + " Copied!");
+        function copyResult(status) {
+            const filtered = scanResults.filter(r => r.status === status).map(r => r.data).join('\n');
+            navigator.clipboard.writeText(filtered);
+            alert(status + " Copied!");
         }
 
-        async function loadAdmin() {
-            document.getElementById('checkerBox').style.display = 'none';
-            const adm = document.getElementById('adminPanel'); adm.style.display = 'block'; adm.innerHTML = "🌀 Loading Requests...";
-            const res = await fetch('/api/users');
-            const users = await res.json();
-            let html = '<h3>USER REQUESTS</h3><table style="width:100%; text-align:left;">';
-            users.forEach(u => {
-                html += `<tr><td>${u.name}</td><td>${u.status}</td>
-                <td><button onclick="adminAction('${u._id}','Approved')" style="background:green; color:white; border:none; padding:5px; margin:2px; cursor:pointer;">YES</button>
-                <button onclick="adminAction('${u._id}','Blocked')" style="background:red; color:white; border:none; padding:5px; margin:2px; cursor:pointer;">NO</button></td></tr>`;
-            });
-            adm.innerHTML = html + '</table>';
+        function loadTool(name) {
+            const body = document.getElementById('toolBody');
+            const title = document.getElementById('toolTitle');
+            document.getElementById('results').innerHTML = '';
             toggleMenu();
+
+            if (name === 'ip') {
+                title.innerText = "IP SLIT";
+                body.innerHTML = `<button class="btn-main" onclick="loadIP()">Check My IP Privacy</button>`;
+            } else {
+                title.innerText = name.toUpperCase() + " SLIT";
+                body.innerHTML = `<textarea id="inputData" rows="8" placeholder="Enter List Here..."></textarea>
+                <button class="btn-main" onclick="runScan('${name}')">Start Super Scan</button>`;
+            }
         }
 
-        async function adminAction(id, action) {
-            await fetch('/api/admin/action', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId:id, action})});
-            loadAdmin();
-        }
-
+        function copyText(txt) { navigator.clipboard.writeText(txt); alert("Copied!"); }
         function logout() { localStorage.clear(); location.reload(); }
+
+        // চেক যদি লগইন থাকে
+        if(localStorage.getItem('role')) {
+            document.getElementById('welcomeUI').style.display = 'block';
+        }
     </script>
 </body>
 </html>
