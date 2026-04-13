@@ -1,12 +1,13 @@
 {
-  "name": "gourab-ultra-checker-v4",
-  "version": "4.1.0",
-  "description": "Secure Multi-Checker with Admin Control and Auto-IP Reconnect",
+  "name": "gourab-ultra-v4-pro",
+  "version": "4.2.0",
+  "description": "Ultra Performance Multi-Checker with Admin Shield and Proxy Guard",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "npm install"
+    "build": "npm install",
+    "postinstall": "echo 'Build Completed Successfully'"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -16,14 +17,23 @@
     "path": "^0.12.7",
     "dotenv": "^16.3.1",
     "helmet": "^7.0.0",
-    "express-rate-limit": "^6.11.0"
+    "express-rate-limit": "^6.11.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
   "engines": {
-    "node": ">=18.x"
+    "node": ">=18.x",
+    "npm": ">=9.x"
   },
+  "keywords": [
+    "ultra-checker",
+    "whoer-clone",
+    "gourab-v4",
+    "secure-login"
+  ],
   "author": "Gourab",
   "license": "MIT"
 }
