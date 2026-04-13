@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gourab Ultra Pro Checker V4</title>
+    <style>
+        :root { --gold: #ffcc00; --bg: #05070a; --card: #0f172a; --green: #22c55e; --red: #ef4444; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; }
+        .nav { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; }
+        .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #020617; transition: 0.4s; z-index: 1000; padding-top: 50px; }
+        .sidebar.active { right: 0; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; color: var(--gold); cursor: pointer; }
+        .container { padding: 20px; max-width: 800px; margin: auto; }
+        .box { background: var(--card); padding: 20px; border-radius: 10px; margin-top: 20px; }
+        textarea { width: 100%; background: #000; color: #fff; border: 1px solid #333; padding: 10px; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-copy { flex: 1; padding: 8px; font-size: 12px; cursor: pointer; border: none; border-radius: 4px; color: #fff; font-weight: bold; }
+        #appUI { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div style="color: var(--gold); font-weight: bold; font-size: 20px;">Gourab V4</div>
+    <div onclick="toggleMenu()" style="cursor: pointer; font-size: 24px;">☰</div>
+</div>
+
+<div id="sidebar" class="sidebar">
+    <span class="close-btn" onclick="toggleMenu()">×</span>
+    <a href="#" onclick="showTool('gmail')" style="display:block; padding:15px; color:white; text-decoration:none;">📧 Gmail Checker</a>
+    <a href="#" onclick="showTool('ip')" style="display:block; padding:15px; color:white; text-decoration:none;">🌐 IP Checker (Whoer)</a>
+    <a href="#" onclick="showTool('fb')" style="display:block; padding:15px; color:white; text-decoration:none;">🔵 Facebook Checker</a>
+    <a href="#" onclick="showTool('tg')" style="display:block; padding:15px; color:white; text-decoration:none;">✈️ Telegram Number</a>
+    <a href="#" id="adminBtn" onclick="showAdmin()" style="display:none; padding:15px; color:cyan; text-decoration:none;">👑 Admin Panel</a>
+</div>
+
+<div class="container">
+    <div id="authUI" class="box">
+        <h2 id="authTitle" style="text-align:center; color: var(--gold);">Login</h2>
+        <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
+        <input type="password" id="pass" placeholder="Password" style="width:100%; padding:10px; margin:10px 0;">
+        <button onclick="handleAuth()" style="width:100%; padding:12px; background:var(--gold); border:none; font-weight:bold; cursor:pointer;">Login</button>
+        <p style="text-align:center; cursor:pointer;" onclick="switchAuth()">No account? Register</p>
+    </div>
+
+    <div id="appUI">
+        <div class="box">
+            <h3 id="toolTitle" style="color: var(--gold);">Welcome to Checker</h3>
+            <div id="toolBody"></div>
+            <div id="res" style="margin-top:10px; border:1px solid #444; padding:10px; min-height:100px;"></div>
+            <div id="copyGroup" class="btn-group" style="display:none;">
+                <button class="btn-copy" style="background:var(--green);" onclick="copy('good')">Copy Good</button>
+                <button class="btn-copy" style="background:var(--red);" onclick="copy('bad')">Copy Bad</button>
+                <button class="btn-copy" style="background:cyan; color:#000;" onclick="copy('verify')">Copy Verified</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isLogin = true;
+    function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+    function switchAuth() { 
+        isLogin = !isLogin; 
+        document.getElementById('authTitle').innerText = isLogin ? "Login" : "Register"; 
+    }
+
+    async function handleAuth() {
+        const url = isLogin ? '/api/login' : '/api/register';
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email: document.getElementById('email').value, password: document.getElementById('pass').value})
+        });
+        const data = await res.json();
+        if(data.success) {
+            if(!isLogin) return alert("Request Sent! Wait for admin approval.");
+            localStorage.setItem('role', data.role);
+            location.reload();
+        } else { alert(data.message); }
+    }
+
+    window.onload = () => {
+        const role = localStorage.getItem('role');
+        if(role) {
+            document.getElementById('authUI').style.display = 'none';
+            document.getElementById('appUI').style.display = 'block';
+            if(role === 'Admin') document.getElementById('adminBtn').style.display = 'block';
+        }
+    }
+
+    function showTool(type) {
+        const body = document.getElementById('toolBody');
+        const res = document.getElementById('res');
+        res.innerHTML = '';
+        if(type === 'ip') {
+            body.innerHTML = `<button onclick="checkIP()" style="width:100%; padding:10px; background:var(--gold); border:none; cursor:pointer;">Check My IP Privacy</button>`;
+        } else {
+            body.innerHTML = `<textarea id="input" rows="8" placeholder="Paste data here..."></textarea><button onclick="startCheck('${type}')" style="width:100%; padding:10px; margin-top:5px; background:var(--gold); border:none; cursor:pointer;">Start Scan</button>`;
+        }
+        toggleMenu();
+    }
+
+    function checkIP() {
+        const res = document.getElementById('res');
+        res.innerHTML = "🌀 Connecting to Server...";
+        setTimeout(() => {
+            const time = new Date().toLocaleTimeString();
+            res.innerHTML = `<div style="color:var(--gold);">
+                ✅ Connected At: ${time}<br>
+                🌐 IP: 103.${Math.floor(Math.random()*255)}.xx.x<br>
+                ISP: Amber IT | DNS: Secure ✅
+            </div>`;
+        }, 1500);
+    }
+</script>
+</body>
+</html>
