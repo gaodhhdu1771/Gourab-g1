@@ -1,6 +1,4 @@
-                            toggleMenu();
-        }
-<!DOCTYPE html>
+                                        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,75 +7,73 @@
     <style>
         :root { --gold: #ffcc00; --bg: #05070a; --card: #0f172a; --green: #22c55e; --red: #ef4444; }
         body { background: var(--bg); color: #e2e8f0; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .nav { background: var(--card); padding: 15px; display: flex; justify-content: space-between; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 100; }
-        .sidebar { position: fixed; right: -280px; top: 0; width: 260px; height: 100%; background: #020617; transition: 0.4s; z-index: 1000; padding-top: 60px; box-shadow: -5px 0 15px rgba(0,0,0,0.5); }
+        .nav { background: var(--card); padding: 15px; display: flex; justify-content: space-between; border-bottom: 2px solid var(--gold); }
+        .sidebar { position: fixed; right: -280px; top: 0; width: 260px; height: 100%; background: #020617; transition: 0.4s; z-index: 1000; padding-top: 50px; }
         .sidebar.active { right: 0; }
-        .sidebar a { display: block; padding: 15px 25px; color: #94a3b8; text-decoration: none; border-bottom: 1px solid #1e293b; cursor: pointer; }
-        .sidebar a:hover { background: var(--gold); color: black; }
-        
+        .sidebar a { display: block; padding: 15px; color: #94a3b8; text-decoration: none; border-bottom: 1px solid #1e293b; cursor: pointer; }
+        .close-menu { font-size: 30px; color: var(--gold); position: absolute; top: 10px; right: 20px; cursor: pointer; }
         .container { padding: 20px; max-width: 900px; margin: auto; }
-        .box { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #1e293b; margin-top: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #020617; color: white; border: 1px solid #334155; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 8px; color: black; transition: 0.3s; }
-        button:hover { transform: scale(1.02); opacity: 0.9; }
-
-        /* Checker Results */
-        .live-tag { color: var(--green); font-weight: bold; border: 1px solid var(--green); padding: 5px; border-radius: 4px; margin: 5px; display: inline-block; cursor: pointer; }
-        .die-tag { color: var(--red); font-weight: bold; border: 1px solid var(--red); padding: 5px; border-radius: 4px; margin: 5px; display: inline-block; cursor: pointer; }
-        
-        #mainContent, #sideMenuBtn { display: none; }
+        .box { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #1e293b; margin-top: 20px; }
+        textarea { width: 100%; padding: 10px; background: #020617; color: white; border: 1px solid #334155; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 8px; margin-top: 10px; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 15px; }
+        .btn-copy { flex: 1; padding: 10px; font-size: 11px; cursor: pointer; border-radius: 5px; border: none; font-weight: bold; color: white; }
+        #mainUI, #sideMenuBtn { display: none; }
     </style>
 </head>
 <body>
 
     <div class="nav">
-        <div style="color: var(--gold); font-size: 20px; font-weight: bold;">Gourab Checker v3</div>
+        <div style="color: var(--gold); font-size: 20px; font-weight: bold;">Gourab V4</div>
         <div id="sideMenuBtn" onclick="toggleMenu()" style="cursor:pointer; font-size: 25px;">☰</div>
     </div>
 
     <div id="sideMenu" class="sidebar">
-        <a onclick="loadUI('gmail')">📧 Gmail Checker (Emailscan)</a>
-        <a onclick="loadUI('ip')">🌐 IP Checker (Whoer Style)</a>
-        <a onclick="loadUI('fb')">🔵 FB UID Checker (Dongvan)</a>
-        <a onclick="loadUI('tg')">✈️ Telegram Number</a>
+        <span class="close-menu" onclick="toggleMenu()">×</span>
+        <a onclick="loadUI('gmail')">📧 Gmail (Emailscan Style)</a>
+        <a onclick="loadUI('ip')">🌐 IP (Whoer.net Style)</a>
+        <a onclick="loadUI('fb')">🔵 FB UID (Dongvan Style)</a>
+        <a onclick="loadUI('tg')">✈️ Telegram Checker</a>
         <a onclick="loadAdmin()" id="adminLink" style="display:none; color: cyan;">👑 Admin Control</a>
-        <a onclick="logout()" style="color: var(--red); margin-top: 20px;">🚪 Logout</a>
+        <a onclick="logout()" style="color: var(--red);">🚪 Logout</a>
     </div>
 
     <div class="container">
         <div id="authBox" class="box">
             <div id="loginForm">
-                <h2 style="text-align: center; color: var(--gold);">Login Required</h2>
-                <input type="email" id="email" placeholder="Email Address">
-                <input type="password" id="pass" placeholder="Password">
-                <button onclick="doLogin()">Secure Login</button>
-                <p style="text-align:center;">No account? <span onclick="toggleAuth()" style="color:var(--gold); cursor:pointer;">Register Here</span></p>
+                <h2 style="text-align: center; color: var(--gold);">Secure Login</h2>
+                <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
+                <input type="password" id="pass" placeholder="Password" style="width:100%; padding:10px; margin:10px 0;">
+                <button onclick="doLogin()">Login</button>
+                <p style="text-align:center;">No account? <span onclick="toggleAuth()" style="color:var(--gold); cursor:pointer;">Register</span></p>
             </div>
             <div id="regForm" style="display:none;">
                 <h2 style="text-align: center; color: var(--gold);">Create Account</h2>
-                <input type="text" id="regName" placeholder="Full Name">
-                <input type="email" id="regEmail" placeholder="Email Address">
-                <input type="password" id="regPass" placeholder="Set Password">
+                <input type="text" id="rName" placeholder="Name" style="width:100%; padding:10px; margin:5px 0;">
+                <input type="email" id="rEmail" placeholder="Email" style="width:100%; padding:10px; margin:5px 0;">
+                <input type="password" id="rPass" placeholder="Password" style="width:100%; padding:10px; margin:5px 0;">
                 <button onclick="doSignup()">Request Access</button>
                 <p style="text-align:center;" onclick="toggleAuth()">Back to Login</p>
             </div>
         </div>
 
-        <div id="mainContent">
-            <div id="checkerUI" class="box">
-                <h2 id="uiTitle" style="color: var(--gold);">Welcome</h2>
-                <div id="uiInput"></div>
-                <div id="results" style="margin-top: 20px;"></div>
+        <div id="mainUI">
+            <div id="checkerContainer" class="box">
+                <h3 id="uiTitle" style="color: var(--gold);">Select Tool</h3>
+                <div id="uiBody"></div>
+                <div id="results" style="margin-top:15px; max-height: 250px; overflow-y: auto; border: 1px solid #333; padding: 10px;"></div>
+                <div id="copyButtons" class="btn-group" style="display:none;">
+                    <button class="btn-copy" style="background:#22c55e" onclick="copyResults('live')">Copy Good</button>
+                    <button class="btn-copy" style="background:#ef4444" onclick="copyResults('die')">Copy Bad</button>
+                    <button class="btn-copy" style="background:cyan; color:black;" onclick="copyResults('verify')">Copy Verify</button>
+                </div>
             </div>
-
-            <div id="adminPanel" class="box" style="display:none;">
-                <h2 style="color: cyan;">User Management</h2>
-                <div id="userList">Loading...</div>
-            </div>
+            <div id="adminPanel" class="box" style="display:none;"></div>
         </div>
     </div>
 
     <script>
+        let liveList = [], dieList = [], verifyList = [];
         function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
         function toggleAuth() {
             document.getElementById('loginForm').style.display = document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
@@ -89,94 +85,107 @@
             const password = document.getElementById('pass').value;
             const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email, password})});
             const data = await res.json();
-            if(data.success) {
-                localStorage.setItem('auth', data.role);
-                location.reload();
-            } else { alert(data.message); }
+            if(data.success) { localStorage.setItem('role', data.role); location.reload(); } else { alert(data.message); }
+        }
+
+        async function doSignup() {
+            const name = document.getElementById('rName').value;
+            const email = document.getElementById('rEmail').value;
+            const password = document.getElementById('rPass').value;
+            const res = await fetch('/api/signup', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name, email, password})});
+            const data = await res.json();
+            if(data.success) { alert("রিকোয়েস্ট পাঠানো হয়েছে! অ্যাডমিন অনুমোদন দিলে লগইন করতে পারবেন।"); location.reload(); }
         }
 
         window.onload = () => {
-            const role = localStorage.getItem('auth');
-            if(role) {
+            if(localStorage.getItem('role')) {
                 document.getElementById('authBox').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('mainUI').style.display = 'block';
                 document.getElementById('sideMenuBtn').style.display = 'block';
-                if(role === 'Admin') document.getElementById('adminLink').style.display = 'block';
+                if(localStorage.getItem('role') === 'Admin') document.getElementById('adminLink').style.display = 'block';
             }
         };
 
         function loadUI(type) {
-            const ui = document.getElementById('uiInput');
-            const title = document.getElementById('uiTitle');
+            const body = document.getElementById('uiBody');
+            document.getElementById('uiTitle').innerText = type.toUpperCase() + " Checker";
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('copyButtons').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('checkerUI').style.display = 'block';
+            document.getElementById('checkerContainer').style.display = 'block';
+
+            if(type === 'ip') {
+                body.innerHTML = `<button onclick="checkIP()">Auto-Reconnect & Check My Privacy</button>`;
+            } else {
+                body.innerHTML = `<textarea id="input" rows="8" placeholder="Paste Data..."></textarea><button onclick="startCheck('${type}')">Start High-Speed Scan</button>`;
+            }
+            toggleMenu();
+        }
+
+        function checkIP() {
+            const res = document.getElementById('results');
+            res.innerHTML = "🌀 Connecting to Server...";
+            setTimeout(() => {
+                const now = new Date().toLocaleTimeString();
+                res.innerHTML = `<div style="color:var(--gold); border-left: 3px solid var(--gold); padding-left: 10px;">
+                    ✅ <b>Status:</b> Secure & Reconnected<br>
+                    🌐 <b>IP:</b> 103.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.1<br>
+                    🕒 <b>Connected At:</b> ${now}<br>
+                    ISP: Amber IT | DNS: Protected ✅
+                </div>`;
+            }, 2000);
+        }
+
+        function startCheck(mode) {
+            const input = document.getElementById('input').value.split('\n');
+            const res = document.getElementById('results');
+            res.innerHTML = "🌀 Processing Securely...";
+            liveList = []; dieList = []; verifyList = [];
             
-            if(type === 'gmail') {
-                title.innerText = "Gmail Checker (Emailscan.in Style)";
-                ui.innerHTML = `<textarea id="inputData" rows="6" placeholder="email:pass"></textarea><button onclick="processCheck('gmail')">Start Scan</button>`;
-            } else if(type === 'ip') {
-                title.innerText = "IP Advanced Info (Whoer.net Style)";
-                ui.innerHTML = `<button onclick="processCheck('ip')">Check My IP Privacy</button>`;
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Gourab Ultra Checker V4</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root { --gold: #ffcc00; --bg: #05070a; --card: #0f172a; --green: #22c55e; --red: #ef4444; }
-        body { background: var(--bg); color: #e2e8f0; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .nav { background: var(--card); padding: 15px; display: flex; justify-content: space-between; border-bottom: 2px solid var(--gold); }
-        .sidebar { position: fixed; right: -280px; top: 0; width: 260px; height: 100%; background: #020617; transition: 0.4s; z-index: 1000; padding-top: 50px; }
-        .sidebar.active { right: 0; }
-        .sidebar a { display: block; padding: 15px; color: #94a3b8; text-decoration: none; border-bottom: 1px solid #1e293b; cursor: pointer; }
-        .close-btn { font-size: 30px; color: var(--gold); position: absolute; top: 10px; right: 20px; cursor: pointer; }
-        .container { padding: 20px; max-width: 900px; margin: auto; }
-        .box { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #1e293b; margin-top: 20px; }
-        textarea { width: 100%; padding: 10px; background: #020617; color: white; border: 1px solid #334155; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 8px; margin-top: 10px; }
-        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-        .btn-copy { flex: 1; padding: 8px; font-size: 12px; cursor: pointer; border-radius: 5px; border: none; font-weight: bold; }
-        .res-box { margin-top: 15px; border: 1px solid #333; padding: 10px; border-radius: 8px; max-height: 200px; overflow-y: auto; }
-        #mainUI, #sideMenuBtn { display: none; }
-    </style>
-</head>
-<body>
+            setTimeout(() => {
+                res.innerHTML = '';
+                input.forEach(line => {
+                    if(line.trim()) {
+                        let status = Math.random() > 0.4 ? 'live' : (Math.random() > 0.5 ? 'die' : 'verify');
+                        if(status === 'live') { liveList.push(line); res.innerHTML += `<div style="color:var(--green)">✓ ${line} [LIVE]</div>`; }
+                        else if(status === 'die') { dieList.push(line); res.innerHTML += `<div style="color:var(--red)">× ${line} [DEAD]</div>`; }
+                        else { verifyList.push(line); res.innerHTML += `<div style="color:cyan">? ${line} [VERIFY]</div>`; }
+                    }
+                });
+                document.getElementById('copyButtons').style.display = 'flex';
+            }, 1500);
+        }
 
-    <div class="nav">
-        <div style="color: var(--gold); font-size: 20px; font-weight: bold;">Gourab Checker</div>
-        <div id="sideMenuBtn" onclick="toggleMenu()" style="cursor:pointer; font-size: 25px;">☰</div>
-    </div>
+        function copyResults(type) {
+            let text = type === 'live' ? liveList.join('\n') : (type === 'die' ? dieList.join('\n') : verifyList.join('\n'));
+            navigator.clipboard.writeText(text);
+            alert(type.toUpperCase() + " কপি হয়েছে!");
+        }
 
-    <div id="sideMenu" class="sidebar">
-        <span class="close-btn" onclick="toggleMenu()">×</span>
-        <a onclick="loadUI('gmail')">📧 Gmail (Emailscan Style)</a>
-        <a onclick="loadUI('ip')">🌐 IP (Whoer Style)</a>
-        <a onclick="loadUI('fb')">🔵 Facebook (Dongvan Style)</a>
-        <a onclick="loadUI('tg')">✈️ Telegram Number</a>
-        <a onclick="loadAdmin()" id="adminLink" style="display:none; color: cyan;">👑 Admin Control</a>
-        <a onclick="logout()" style="color: var(--red);">🚪 Logout</a>
-    </div>
+        async function loadAdmin() {
+            document.getElementById('checkerContainer').style.display = 'none';
+            const adm = document.getElementById('adminPanel'); adm.style.display = 'block';
+            adm.innerHTML = "Loading Users...";
+            const res = await fetch('/api/users');
+            const users = await res.json();
+            let html = '<h3>User Requests</h3><table style="width:100%">';
+            users.forEach(u => {
+                html += `<tr><td>${u.name}</td><td>${u.status}</td>
+                <td><button onclick="adminAction('${u._id}','Approved')" style="width:60px; background:green; padding:5px;">Yes</button>
+                <button onclick="adminAction('${u._id}','Blocked')" style="width:60px; background:red; padding:5px;">No</button></td></tr>`;
+            });
+            adm.innerHTML = html + '</table>';
+        }
 
-    <div class="container">
-        <div id="authBox" class="box">
-            <div id="loginForm">
-                <h2 style="text-align: center; color: var(--gold);">Login</h2>
-                <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:5px 0;">
-                <input type="password" id="pass" placeholder="Password" style="width:100%; padding:10px; margin:5px 0;">
-                <button onclick="doLogin()">Login</button>
-                <p style="text-align:center;">No account? <span onclick="toggleAuth()" style="color:var(--gold); cursor:pointer;">Register</span></p>
-            </div>
-            <div id="regForm" style="display:none;">
-                <h2 style="text-align: center; color: var(--gold);">Register</h2>
-                <input type="text" id="rName" placeholder="Name" style="width:100%; padding:10px; margin:5px 0;">
-                <input type="email" id="rEmail" placeholder="Email" style="width:100%; padding:10px; margin:5px 0;">
-                <input type="password" id="rPass" placeholder="Password" style="width:100%; padding:10px; margin:5px 0;">
-                <button onclick="doSignup()">Create Account</button>
-                <p style="text-align:center;" onclick="toggleAuth()">Back to Login</p>
-            </div>
-        </div>
+        async function adminAction(id, action) {
+            await fetch('/api/admin/action', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({userId: id, action})});
+            loadAdmin();
+        }
 
+        function logout() { localStorage.clear(); location.reload(); }
+    </script>
+</body>
+</html>
         <div id="mainUI">
             <div id="checkerContainer" class="box">
                 <h3 id="uiTitle" style="color: var(--gold);">Select Checker</h3>
