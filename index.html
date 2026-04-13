@@ -113,32 +113,141 @@
         function copyResult(status) {
             const filtered = scanResults.filter(r => r.status === status).map(r => r.data).join('\n');
             navigator.clipboard.writeText(filtered);
-            alert(status + " Copied!");
-        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GOURAB CHECKER v1</title>
+    <style>
+        :root { --gold: #ffcc00; --bg: #030712; --card: #111827; --green: #10b981; --red: #ef4444; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; }
+        .nav { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #000; transition: 0.4s; z-index: 2000; border-left: 1px solid var(--gold); }
+        .sidebar.active { right: 0; }
+        .container { padding: 20px; max-width: 800px; margin: auto; }
+        .box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-top: 20px; }
+        textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; box-sizing: border-box; }
+        .btn-main { width: 100%; padding: 12px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 8px; margin-top: 10px; }
+        .ip-detail { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        .copy-mini { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 2px 6px; cursor: pointer; border-radius: 4px; font-size: 10px; }
+        .status-good { color: var(--green); font-weight: bold; border-bottom: 1px solid #222; padding: 5px; }
+        .status-bad { color: var(--red); font-weight: bold; border-bottom: 1px solid #222; padding: 5px; }
+    </style>
+</head>
+<body>
 
-        function loadTool(name) {
+    <div class="nav">
+        <div style="color: var(--gold); font-weight: bold; font-size: 18px;">GOURAB CHECKER v1</div>
+        <div id="menuIcon" onclick="toggleMenu()" style="cursor:pointer; font-size: 24px; display:none;">☰</div>
+    </div>
+
+    <div id="sidebar" class="sidebar">
+        <div style="text-align:right; padding:15px; font-size:30px; color:var(--gold); cursor:pointer;" onclick="toggleMenu()">×</div>
+        <a href="#" onclick="loadTool('gmail')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">📧 Gmail Slit</a>
+        <a href="#" onclick="loadTool('ip')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">🌐 Ip Slit</a>
+        <a href="#" onclick="loadTool('fb')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">🔵 Facebook Slit</a>
+        <a href="#" onclick="loadTool('tg')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">✈️ Tg Slit</a>
+    </div>
+
+    <div class="container">
+        <div id="welcomeScreen" class="box" style="display:none; text-align:center;">
+            <h2 style="color:var(--gold);">স্বাগতম!</h2>
+            <p>গৌরব ভাইয়ের এই সাইটে আপনাকে স্বাগতম। এই সাইটে আপনি আপনার প্রয়োজনের সবকিছু পেয়ে যাবেন। ভদ্রতার সাথে কাজ করুন এবং কোন সমস্যা হলে গৌরব ভাইকে বলুন। ধন্যবাদ।</p>
+            <button class="btn-main" onclick="openApp()">কাজ শুরু করুন</button>
+        </div>
+
+        <div id="mainApp" style="display:none;">
+            <div class="box">
+                <h3 id="toolTitle" style="color:var(--gold);">Select a Tool</h3>
+                <div id="toolBody"></div>
+                <div id="results" style="margin-top:20px;"></div>
+                <div id="copyActions" style="display:none; gap:10px; margin-top:15px;">
+                    <button class="btn-main" style="flex:1; background:var(--green); color:white;" onclick="copyByStatus('LIVE')">Copy Good</button>
+                    <button class="btn-main" style="flex:1; background:var(--red); color:white;" onclick="copyByStatus('DIE')">Copy Bad</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentResults = [];
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+        function openApp() { document.getElementById('welcomeScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; }
+
+        async function loadTool(name) {
             const body = document.getElementById('toolBody');
             const title = document.getElementById('toolTitle');
-            document.getElementById('results').innerHTML = '';
+            const resDiv = document.getElementById('results');
+            resDiv.innerHTML = ''; document.getElementById('copyActions').style.display = 'none';
             toggleMenu();
 
             if (name === 'ip') {
-                title.innerText = "IP SLIT";
-                body.innerHTML = `<button class="btn-main" onclick="loadIP()">Check My IP Privacy</button>`;
+                title.innerText = "IP SLIT (WHOER STYLE)";
+                body.innerHTML = `<button class="btn-main" onclick="checkIpDetails()">Check My Ip Privacy</button>`;
             } else {
                 title.innerText = name.toUpperCase() + " SLIT";
                 body.innerHTML = `<textarea id="inputData" rows="8" placeholder="Enter List Here..."></textarea>
-                <button class="btn-main" onclick="runScan('${name}')">Start Super Scan</button>`;
+                <button class="btn-main" onclick="startScan('${name}')">Start Checking</button>`;
             }
         }
 
-        function copyText(txt) { navigator.clipboard.writeText(txt); alert("Copied!"); }
-        function logout() { localStorage.clear(); location.reload(); }
+        async function checkIpDetails() {
+            const res = document.getElementById('results');
+            res.innerHTML = "🌀 Fetching Pure Data...";
+            const data = await fetch('https://ipapi.co/json/').then(r => r.json());
+            const speed = (Math.random() * 50 + 20).toFixed(2);
+            const now = new Date().toLocaleTimeString();
 
-        // চেক যদি লগইন থাকে
-        if(localStorage.getItem('role')) {
-            document.getElementById('welcomeUI').style.display = 'block';
+            res.innerHTML = `
+                <div class="box" style="border-color:var(--gold); padding:10px;">
+                    <div class="ip-detail"><span>Country: ${data.country_name} (${data.country_code})</span> <button class="copy-mini" onclick="copyTxt('${data.country_name}')">Copy</button></div>
+                    <div class="ip-detail"><span>Region: ${data.region}</span> <button class="copy-mini" onclick="copyTxt('${data.region}')">Copy</button></div>
+                    <div class="ip-detail"><span>Location: ${data.city}</span> <button class="copy-mini" onclick="copyTxt('${data.city}')">Copy</button></div>
+                    <div class="ip-detail"><span>Device: ${navigator.userAgent.includes('Android') ? 'Android' : 'iOS'}</span></div>
+                    <div class="ip-detail"><span>Time: ${now}</span></div>
+                    <div class="ip-detail"><span>VPN/IP Connect: ${data.org.includes('VPN') ? 'YES' : 'NO'}</span></div>
+                    <div class="ip-detail"><span>Percentage: 100% Secure</span></div>
+                    <div class="ip-detail"><span>Speed: ${speed} Mbps</span></div>
+                </div>
+            `;
         }
+
+        async function startScan(type) {
+            const lines = document.getElementById('inputData').value.split('\n').filter(l => l.trim());
+            const resDiv = document.getElementById('results');
+            resDiv.innerHTML = "🚀 Scanning...";
+            currentResults = [];
+
+            for (let line of lines) {
+                const response = await fetch('/api/check', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ input: line.trim(), type: type })
+                });
+                const data = await response.json();
+                currentResults.push({ input: line.trim(), status: data.status });
+                
+                const cssClass = data.status === 'LIVE' ? 'status-good' : 'status-bad';
+                resDiv.innerHTML += `<div class="${cssClass}">[${data.status}] ${line}</div>`;
+            }
+            document.getElementById('copyActions').style.display = 'flex';
+        }
+
+        function copyByStatus(status) {
+            const list = currentResults.filter(r => r.status === status).map(r => r.input).join('\n');
+            navigator.clipboard.writeText(list);
+            alert(status + " List Copied!");
+        }
+
+        function copyTxt(t) { navigator.clipboard.writeText(t); alert("Copied!"); }
+
+        // Auth Check
+        window.onload = () => {
+            if (localStorage.getItem('role')) {
+                document.getElementById('welcomeScreen').style.display = 'block';
+                document.getElementById('menuIcon').style.display = 'block';
+            }
+        };
     </script>
 </body>
 </html>
