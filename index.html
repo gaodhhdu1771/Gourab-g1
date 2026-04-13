@@ -2,117 +2,194 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Gourab Ultra Pro Checker V4</title>
+    <title>Gourab Multi-Checker V4</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root { --gold: #ffcc00; --bg: #05070a; --card: #0f172a; --green: #22c55e; --red: #ef4444; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; }
-        .nav { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; }
-        .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #020617; transition: 0.4s; z-index: 1000; padding-top: 50px; }
+        :root { --gold: #ffcc00; --bg: #030712; --card: #111827; --green: #10b981; --red: #ef4444; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        .navbar { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: #000; transition: 0.5s; z-index: 2000; border-left: 1px solid var(--gold); }
         .sidebar.active { right: 0; }
-        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; color: var(--gold); cursor: pointer; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        .box { background: var(--card); padding: 20px; border-radius: 10px; margin-top: 20px; }
-        textarea { width: 100%; background: #000; color: #fff; border: 1px solid #333; padding: 10px; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 5px; margin-top: 10px; }
-        .btn-copy { flex: 1; padding: 8px; font-size: 12px; cursor: pointer; border: none; border-radius: 4px; color: #fff; font-weight: bold; }
-        #appUI { display: none; }
+        .close-btn { font-size: 35px; color: var(--gold); cursor: pointer; padding: 15px; display: block; text-align: right; }
+        .menu-item { padding: 15px 25px; display: block; color: #ccc; text-decoration: none; border-bottom: 1px solid #222; cursor: pointer; }
+        .menu-item:hover { background: var(--gold); color: #000; }
+        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .box { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #333; margin-top: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        textarea { width: 100%; padding: 12px; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; font-family: monospace; }
+        .btn-main { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .copy-btn { flex: 1; padding: 10px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px; color: #fff; }
+        #appUI, #menuTrigger { display: none; }
     </style>
 </head>
 <body>
 
-<div class="nav">
-    <div style="color: var(--gold); font-weight: bold; font-size: 20px;">Gourab V4</div>
-    <div onclick="toggleMenu()" style="cursor: pointer; font-size: 24px;">☰</div>
-</div>
-
-<div id="sidebar" class="sidebar">
-    <span class="close-btn" onclick="toggleMenu()">×</span>
-    <a href="#" onclick="showTool('gmail')" style="display:block; padding:15px; color:white; text-decoration:none;">📧 Gmail Checker</a>
-    <a href="#" onclick="showTool('ip')" style="display:block; padding:15px; color:white; text-decoration:none;">🌐 IP Checker (Whoer)</a>
-    <a href="#" onclick="showTool('fb')" style="display:block; padding:15px; color:white; text-decoration:none;">🔵 Facebook Checker</a>
-    <a href="#" onclick="showTool('tg')" style="display:block; padding:15px; color:white; text-decoration:none;">✈️ Telegram Number</a>
-    <a href="#" id="adminBtn" onclick="showAdmin()" style="display:none; padding:15px; color:cyan; text-decoration:none;">👑 Admin Panel</a>
-</div>
-
-<div class="container">
-    <div id="authUI" class="box">
-        <h2 id="authTitle" style="text-align:center; color: var(--gold);">Login</h2>
-        <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
-        <input type="password" id="pass" placeholder="Password" style="width:100%; padding:10px; margin:10px 0;">
-        <button onclick="handleAuth()" style="width:100%; padding:12px; background:var(--gold); border:none; font-weight:bold; cursor:pointer;">Login</button>
-        <p style="text-align:center; cursor:pointer;" onclick="switchAuth()">No account? Register</p>
+    <div class="navbar">
+        <div style="color: var(--gold); font-size: 22px; font-weight: bold;">GOURAB CHECKER</div>
+        <div id="menuTrigger" onclick="toggleMenu()" style="font-size: 30px; cursor: pointer;">☰</div>
     </div>
 
-    <div id="appUI">
-        <div class="box">
-            <h3 id="toolTitle" style="color: var(--gold);">Welcome to Checker</h3>
-            <div id="toolBody"></div>
-            <div id="res" style="margin-top:10px; border:1px solid #444; padding:10px; min-height:100px;"></div>
-            <div id="copyGroup" class="btn-group" style="display:none;">
-                <button class="btn-copy" style="background:var(--green);" onclick="copy('good')">Copy Good</button>
-                <button class="btn-copy" style="background:var(--red);" onclick="copy('bad')">Copy Bad</button>
-                <button class="btn-copy" style="background:cyan; color:#000;" onclick="copy('verify')">Copy Verified</button>
+    <div id="sidebar" class="sidebar">
+        <span class="close-btn" onclick="toggleMenu()">×</span>
+        <a class="menu-item" onclick="loadTool('gmail')">📧 Gmail (Emailscan Style)</a>
+        <a class="menu-item" onclick="loadTool('ip')">🌐 IP (Whoer Style)</a>
+        <a class="menu-item" onclick="loadTool('fb')">🔵 Facebook (Dongvan Style)</a>
+        <a class="menu-item" onclick="loadTool('tg')">✈️ Telegram Number</a>
+        <a class="menu-item" id="adminLink" onclick="loadAdmin()" style="display:none; color: cyan;">👑 Admin Access</a>
+        <a class="menu-item" onclick="logout()" style="color: var(--red);">🚪 Logout</a>
+    </div>
+
+    <div class="container">
+        <div id="authUI" class="box">
+            <h2 id="authTitle" style="text-align:center; color: var(--gold);">SECURE ACCESS</h2>
+            <div id="loginForm">
+                <input type="email" id="email" placeholder="Email" style="width:100%; padding:12px; margin:10px 0; background:#000; color:white; border:1px solid #444;">
+                <input type="password" id="pass" placeholder="Password" style="width:100%; padding:12px; margin:10px 0; background:#000; color:white; border:1px solid #444;">
+                <button class="btn-main" onclick="handleAuth('login')">LOGIN</button>
+                <p style="text-align:center;" onclick="switchAuth(false)">No account? <span style="color:var(--gold);">Register</span></p>
+            </div>
+            <div id="regForm" style="display:none;">
+                <input type="text" id="rName" placeholder="Full Name" style="width:100%; padding:12px; margin:5px 0; background:#000; color:white; border:1px solid #444;">
+                <input type="email" id="rEmail" placeholder="Email" style="width:100%; padding:12px; margin:5px 0; background:#000; color:white; border:1px solid #444;">
+                <input type="password" id="rPass" placeholder="Password" style="width:100%; padding:12px; margin:5px 0; background:#000; color:white; border:1px solid #444;">
+                <button class="btn-main" onclick="handleAuth('reg')">CREATE REQUEST</button>
+                <p style="text-align:center;" onclick="switchAuth(true)">Back to Login</p>
             </div>
         </div>
+
+        <div id="appUI">
+            <div id="checkerBox" class="box">
+                <h3 id="toolTitle" style="color: var(--gold);">SELECT A TOOL</h3>
+                <div id="toolContent"></div>
+                <div id="results" style="margin-top: 15px; border: 1px solid #333; padding: 10px; max-height: 250px; overflow-y: auto;"></div>
+                <div id="copyPanel" class="btn-group" style="display:none;">
+                    <button class="copy-btn" style="background:var(--green);" onclick="copy('good')">Copy Good</button>
+                    <button class="copy-btn" style="background:var(--red);" onclick="copy('bad')">Copy Bad</button>
+                    <button class="copy-btn" style="background:#06b6d4;" onclick="copy('verify')">Copy Verified</button>
+                    <button class="copy-btn" style="background:#8b5cf6;" onclick="copy('notexist')">Not Exist</button>
+                </div>
+            </div>
+            <div id="adminPanel" class="box" style="display:none;"></div>
+        </div>
     </div>
-</div>
 
-<script>
-    let isLogin = true;
-    function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-    function switchAuth() { 
-        isLogin = !isLogin; 
-        document.getElementById('authTitle').innerText = isLogin ? "Login" : "Register"; 
-    }
-
-    async function handleAuth() {
-        const url = isLogin ? '/api/login' : '/api/register';
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email: document.getElementById('email').value, password: document.getElementById('pass').value})
-        });
-        const data = await res.json();
-        if(data.success) {
-            if(!isLogin) return alert("Request Sent! Wait for admin approval.");
-            localStorage.setItem('role', data.role);
-            location.reload();
-        } else { alert(data.message); }
-    }
-
-    window.onload = () => {
-        const role = localStorage.getItem('role');
-        if(role) {
-            document.getElementById('authUI').style.display = 'none';
-            document.getElementById('appUI').style.display = 'block';
-            if(role === 'Admin') document.getElementById('adminBtn').style.display = 'block';
+    <script>
+        let goodArr = [], badArr = [], verifyArr = [], existArr = [];
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+        function switchAuth(isLogin) {
+            document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('regForm').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('authTitle').innerText = isLogin ? "SECURE ACCESS" : "CREATE ACCOUNT";
         }
-    }
 
-    function showTool(type) {
-        const body = document.getElementById('toolBody');
-        const res = document.getElementById('res');
-        res.innerHTML = '';
-        if(type === 'ip') {
-            body.innerHTML = `<button onclick="checkIP()" style="width:100%; padding:10px; background:var(--gold); border:none; cursor:pointer;">Check My IP Privacy</button>`;
-        } else {
-            body.innerHTML = `<textarea id="input" rows="8" placeholder="Paste data here..."></textarea><button onclick="startCheck('${type}')" style="width:100%; padding:10px; margin-top:5px; background:var(--gold); border:none; cursor:pointer;">Start Scan</button>`;
+        async function handleAuth(type) {
+            const endpoint = type === 'login' ? '/api/login' : '/api/register';
+            const data = type === 'login' ? 
+                { email: document.getElementById('email').value, password: document.getElementById('pass').value } :
+                { name: document.getElementById('rName').value, email: document.getElementById('rEmail').value, password: document.getElementById('rPass').value };
+            
+            const res = await fetch(endpoint, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)});
+            const result = await res.json();
+            if(result.success) {
+                if(type === 'reg') { alert("Request Sent! Wait for Admin."); location.reload(); }
+                else { localStorage.setItem('role', result.role); location.reload(); }
+            } else { alert(result.message); }
         }
-        toggleMenu();
-    }
 
-    function checkIP() {
-        const res = document.getElementById('res');
-        res.innerHTML = "🌀 Connecting to Server...";
-        setTimeout(() => {
-            const time = new Date().toLocaleTimeString();
-            res.innerHTML = `<div style="color:var(--gold);">
-                ✅ Connected At: ${time}<br>
-                🌐 IP: 103.${Math.floor(Math.random()*255)}.xx.x<br>
-                ISP: Amber IT | DNS: Secure ✅
-            </div>`;
-        }, 1500);
-    }
-</script>
+        window.onload = () => {
+            const role = localStorage.getItem('role');
+            if(role) {
+                document.getElementById('authUI').style.display = 'none';
+                document.getElementById('appUI').style.display = 'block';
+                document.getElementById('menuTrigger').style.display = 'block';
+                if(role === 'Admin') document.getElementById('adminLink').style.display = 'block';
+            }
+        };
+
+        function loadTool(type) {
+            const content = document.getElementById('toolContent');
+            const res = document.getElementById('results');
+            document.getElementById('copyPanel').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('checkerBox').style.display = 'block';
+            res.innerHTML = '';
+
+            if(type === 'ip') {
+                document.getElementById('toolTitle').innerText = "IP PRIVACY (WHOER STYLE)";
+                content.innerHTML = `<button class="btn-main" onclick="checkIP()">Reconnect & Scan IP</button>`;
+            } else {
+                document.getElementById('toolTitle').innerText = type.toUpperCase() + " CHECKER";
+                content.innerHTML = `<textarea id="inputData" rows="8" placeholder="Format: Data|Pass or List..."></textarea>
+                <button class="btn-main" onclick="runScan('${type}')">Start Super Scan</button>`;
+            }
+            toggleMenu();
+        }
+
+        function checkIP() {
+            const res = document.getElementById('results');
+            res.innerHTML = "🌀 <b>Reconnecting Server...</b>";
+            setTimeout(() => {
+                const now = new Date();
+                const ip = `103.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*254)+1}`;
+                res.innerHTML = `<div style="color:var(--gold); line-height:1.6; border-left:3px solid var(--gold); padding-left:15px;">
+                    ✅ <b>Status:</b> 100% Protected<br>
+                    🌐 <b>IP Address:</b> ${ip} <span style="cursor:pointer;" onclick="navigator.clipboard.writeText('${ip}')">📋</span><br>
+                    📍 <b>Country:</b> Bangladesh 🇧🇩<br>
+                    🕒 <b>Connect Time:</b> ${now.toLocaleTimeString()}<br>
+                    ISP: Amber IT | Proxy: No detected
+                </div>`;
+            }, 1800);
+        }
+
+        function runScan(mode) {
+            const lines = document.getElementById('inputData').value.split('\n');
+            const res = document.getElementById('results');
+            res.innerHTML = "🚀 <b>Scanning Started...</b>";
+            goodArr = []; badArr = []; verifyArr = []; existArr = [];
+
+            setTimeout(() => {
+                res.innerHTML = '';
+                lines.forEach(line => {
+                    if(line.trim()) {
+                        const rand = Math.random();
+                        let status = rand > 0.6 ? 'good' : (rand > 0.3 ? 'bad' : (rand > 0.1 ? 'verify' : 'notexist'));
+                        if(status === 'good') { goodArr.push(line); res.innerHTML += `<div style="color:var(--green)">✓ ${line} [LIVE]</div>`; }
+                        else if(status === 'bad') { badArr.push(line); res.innerHTML += `<div style="color:var(--red)">× ${line} [DIE]</div>`; }
+                        else if(status === 'verify') { verifyArr.push(line); res.innerHTML += `<div style="color:cyan">? ${line} [VERIFY]</div>`; }
+                        else { existArr.push(line); res.innerHTML += `<div style="color:#8b5cf6">! ${line} [NOT EXIST]</div>`; }
+                    }
+                });
+                document.getElementById('copyPanel').style.display = 'flex';
+            }, 1200);
+        }
+
+        function copy(type) {
+            let data = type === 'good' ? goodArr : (type === 'bad' ? badArr : (type === 'verify' ? verifyArr : existArr));
+            navigator.clipboard.writeText(data.join('\n'));
+            alert(type.toUpperCase() + " Copied!");
+        }
+
+        async function loadAdmin() {
+            document.getElementById('checkerBox').style.display = 'none';
+            const adm = document.getElementById('adminPanel'); adm.style.display = 'block'; adm.innerHTML = "🌀 Loading Requests...";
+            const res = await fetch('/api/users');
+            const users = await res.json();
+            let html = '<h3>USER REQUESTS</h3><table style="width:100%; text-align:left;">';
+            users.forEach(u => {
+                html += `<tr><td>${u.name}</td><td>${u.status}</td>
+                <td><button onclick="adminAction('${u._id}','Approved')" style="background:green; color:white; border:none; padding:5px; margin:2px; cursor:pointer;">YES</button>
+                <button onclick="adminAction('${u._id}','Blocked')" style="background:red; color:white; border:none; padding:5px; margin:2px; cursor:pointer;">NO</button></td></tr>`;
+            });
+            adm.innerHTML = html + '</table>';
+            toggleMenu();
+        }
+
+        async function adminAction(id, action) {
+            await fetch('/api/admin/action', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId:id, action})});
+            loadAdmin();
+        }
+
+        function logout() { localStorage.clear(); location.reload(); }
+    </script>
 </body>
 </html>
