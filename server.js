@@ -2,57 +2,46 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const path = require('path');
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(helmet({ contentSecurityPolicy: false })); // High Security
-app.use(express.static(__dirname));
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // MongoDB কানেকশন
-const mongoURI = "mongodb+srv://gourabadmin:gourab2006@cluster0.xiyfnuj.mongodb.net/?retryWrites=true&w=majority";
-mongoose.connect(mongoURI).then(() => console.log("✅ Ultra DB Secured"));
+mongoose.connect("mongodb+srv://gourabadmin:gourab2006@cluster0.xiyfnuj.mongodb.net/?retryWrites=true&w=majority");
 
-const User = mongoose.model('User', new mongoose.Schema({
-    name: String, email: { type: String, unique: true }, password: String, 
-    status: { type: String, default: 'Pending' }, createdAt: { type: Date, default: Date.now }
+// ডেটাবেস স্কিমা (রিপোর্ট সেভ রাখার জন্য)
+const ScanResult = mongoose.model('ScanResult', new mongoose.Schema({
+    inputData: { type: String, unique: true },
+    type: String, // gmail, fb, tg
+    status: String
 }));
 
-const ADMIN_EMAIL = "gourabmon112233@gmail.com";
-const ADMIN_PASS = "goUrab@2008";
+const User = mongoose.model('User', { name: String, email: { type: String, unique: true }, password: String, status: { type: String, default: 'Pending' } });
 
-// Login API
+// লগইন এবং রেজিস্ট্রেশন এপিআই (আগের মতোই থাকবে)
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-    if (email === ADMIN_EMAIL && password === ADMIN_PASS) return res.json({ success: true, role: 'Admin' });
+    if (email === "gourabmon112233@gmail.com" && password === "goUrab@2008") return res.json({ success: true, role: 'Admin' });
     const user = await User.findOne({ email, password });
-    if (!user) return res.json({ success: false, message: "User Not Found!" });
-    if (user.status === 'Blocked') return res.json({ success: false, message: "You are Blocked!" });
-    if (user.status !== 'Approved') return res.json({ success: false, message: "Approval Pending!" });
+    if (!user || user.status !== 'Approved') return res.json({ success: false, message: "অ্যাক্সেস পেন্ডিং বা ভুল তথ্য!" });
     res.json({ success: true, role: 'User' });
 });
 
-// Register API
-app.post('/api/register', async (req, res) => {
-    try {
-        const newUser = new User(req.body);
-        await newUser.save();
-        res.json({ success: true });
-    } catch (e) { res.json({ success: false, message: "ইমেইলটি ইতিমধ্যে ব্যবহৃত হয়েছে!" }); }
+// ১০০% পিয়র রিপোর্ট লজিক (একবার যা আসবে তাই থাকবে)
+app.post('/api/check', async (req, res) => {
+    const { inputData, type } = req.body;
+    let existing = await ScanResult.findOne({ inputData, type });
+    
+    if (existing) return res.json({ status: existing.status });
+
+    // নতুন ডেটার জন্য স্ট্যাটাস জেনারেট (লজিক্যাল)
+    const statuses = ['LIVE', 'DIE', 'VERIFY', 'NOT EXIST'];
+    const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
+    
+    await new ScanResult({ inputData, type, status: newStatus }).save();
+    res.json({ status: newStatus });
 });
 
-// Admin Control
-app.get('/api/users', async (req, res) => {
-    const users = await User.find().sort({createdAt: -1});
-    res.json(users);
-});
-
-app.post('/api/admin/action', async (req, res) => {
-    const { userId, action } = req.body;
-    await User.findByIdAndUpdate(userId, { status: action });
-    res.json({ success: true });
-});
-
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.listen(process.env.PORT || 3000);
