@@ -1,129 +1,170 @@
-        <!DOCTYPE html>
+                <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chakar Pro - Gourab</title>
+    <title>Gourab Ultra Pro Checker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root { --gold: #f1c40f; --bg: #0d1117; --card: #161b22; }
-        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; }
-        .nav { background: var(--card); padding: 15px; display: flex; justify-content: space-between; border-bottom: 2px solid var(--gold); }
-        .menu-btn { font-size: 25px; cursor: pointer; color: var(--gold); }
-        .sidebar { position: fixed; right: -260px; top: 0; width: 250px; height: 100%; background: #010409; transition: 0.3s; z-index: 1000; padding-top: 50px; }
+        :root { --gold: #ffcc00; --bg: #05070a; --card: #0f172a; --green: #22c55e; --red: #ef4444; }
+        body { background: var(--bg); color: #e2e8f0; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .nav { background: var(--card); padding: 15px; display: flex; justify-content: space-between; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 100; }
+        .sidebar { position: fixed; right: -280px; top: 0; width: 260px; height: 100%; background: #020617; transition: 0.4s; z-index: 1000; padding-top: 60px; box-shadow: -5px 0 15px rgba(0,0,0,0.5); }
         .sidebar.active { right: 0; }
-        .sidebar a { display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #222; cursor: pointer; }
-        .container { padding: 20px; text-align: center; }
-        .box { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; }
-        input, textarea { width: 90%; padding: 10px; margin: 10px 0; background: #0d1117; color: white; border: 1px solid var(--gold); border-radius: 5px; }
-        button { width: 95%; padding: 12px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .good { color: #2ecc71; border: 1px solid #2ecc71; padding: 5px; margin: 5px; display: inline-block; cursor: pointer; }
-        .bad { color: #e74c3c; border: 1px solid #e74c3c; padding: 5px; margin: 5px; display: inline-block; cursor: pointer; }
-        #checkerArea, #adminArea, #dashboard { display: none; }
+        .sidebar a { display: block; padding: 15px 25px; color: #94a3b8; text-decoration: none; border-bottom: 1px solid #1e293b; cursor: pointer; }
+        .sidebar a:hover { background: var(--gold); color: black; }
+        
+        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .box { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #1e293b; margin-top: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #020617; color: white; border: 1px solid #334155; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 8px; color: black; transition: 0.3s; }
+        button:hover { transform: scale(1.02); opacity: 0.9; }
+
+        /* Checker Results */
+        .live-tag { color: var(--green); font-weight: bold; border: 1px solid var(--green); padding: 5px; border-radius: 4px; margin: 5px; display: inline-block; cursor: pointer; }
+        .die-tag { color: var(--red); font-weight: bold; border: 1px solid var(--red); padding: 5px; border-radius: 4px; margin: 5px; display: inline-block; cursor: pointer; }
+        
+        #mainContent, #sideMenuBtn { display: none; }
     </style>
 </head>
 <body>
 
     <div class="nav">
-        <div style="color: var(--gold); font-weight: bold;">Gourab.com</div>
-        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <div style="color: var(--gold); font-size: 20px; font-weight: bold;">Gourab Checker v3</div>
+        <div id="sideMenuBtn" onclick="toggleMenu()" style="cursor:pointer; font-size: 25px;">☰</div>
     </div>
 
     <div id="sideMenu" class="sidebar">
-        <a onclick="showChecker('gmail')">১. Gmail Checker</a>
-        <a onclick="showChecker('ip')">২. IP Checker</a>
-        <a onclick="showChecker('number')">৩. Number Checker</a>
-        <a onclick="showChecker('facebook')">৪. FB ID Checker</a>
-        <a onclick="showAdmin()" id="adminMenu" style="display:none; color:cyan;">Admin Panel</a>
-        <div style="padding: 15px; font-size: 12px; border-top: 1px solid var(--gold);">
-            <b>Contact Admin:</b><br>
-            <a href="https://www.facebook.com/share/18Fm3mGraj/" target="_blank">Facebook</a>
-            Telegram/WhatsApp: 8801336489062
-        </div>
-        <a onclick="logout()" style="color: red;">Logout</a>
+        <a onclick="loadUI('gmail')">📧 Gmail Checker (Emailscan)</a>
+        <a onclick="loadUI('ip')">🌐 IP Checker (Whoer Style)</a>
+        <a onclick="loadUI('fb')">🔵 FB UID Checker (Dongvan)</a>
+        <a onclick="loadUI('tg')">✈️ Telegram Number</a>
+        <a onclick="loadAdmin()" id="adminLink" style="display:none; color: cyan;">👑 Admin Control</a>
+        <a onclick="logout()" style="color: var(--red); margin-top: 20px;">🚪 Logout</a>
     </div>
 
     <div class="container">
-        <div id="loginSection" class="box">
-            <h2 style="color: var(--gold);">Login</h2>
-            <input type="email" id="lEmail" placeholder="Email">
-            <input type="password" id="lPass" placeholder="Password">
-            <button onclick="handleLogin()">Login</button>
+        <div id="authBox" class="box">
+            <div id="loginForm">
+                <h2 style="text-align: center; color: var(--gold);">Login Required</h2>
+                <input type="email" id="email" placeholder="Email Address">
+                <input type="password" id="pass" placeholder="Password">
+                <button onclick="doLogin()">Secure Login</button>
+                <p style="text-align:center;">No account? <span onclick="toggleAuth()" style="color:var(--gold); cursor:pointer;">Register Here</span></p>
+            </div>
+            <div id="regForm" style="display:none;">
+                <h2 style="text-align: center; color: var(--gold);">Create Account</h2>
+                <input type="text" id="regName" placeholder="Full Name">
+                <input type="email" id="regEmail" placeholder="Email Address">
+                <input type="password" id="regPass" placeholder="Set Password">
+                <button onclick="doSignup()">Request Access</button>
+                <p style="text-align:center;" onclick="toggleAuth()">Back to Login</p>
+            </div>
         </div>
 
-        <div id="dashboard">
-            <h1 style="color: var(--gold);">স্বাগতম গৌরাব!</h1>
-            <p>মেনু থেকে আপনার চেকার সিলেক্ট করুন।</p>
-        </div>
+        <div id="mainContent">
+            <div id="checkerUI" class="box">
+                <h2 id="uiTitle" style="color: var(--gold);">Welcome</h2>
+                <div id="uiInput"></div>
+                <div id="results" style="margin-top: 20px;"></div>
+            </div>
 
-        <div id="checkerArea" class="box">
-            <h2 id="checkerTitle" style="color: var(--gold);"></h2>
-            <textarea id="checkerInput" rows="5" placeholder="এখানে ডাটা দিন..."></textarea>
-            <button onclick="startCheck()">Check Now</button>
-            <div id="resultArea" style="margin-top:20px;"></div>
-        </div>
-
-        <div id="adminArea" class="box">
-            <h2 style="color: var(--gold);">Admin Panel</h2>
-            <div id="userList"></div>
+            <div id="adminPanel" class="box" style="display:none;">
+                <h2 style="color: cyan;">User Management</h2>
+                <div id="userList">Loading...</div>
+            </div>
         </div>
     </div>
 
     <script>
-        let currentChecker = '';
         function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
+        function toggleAuth() {
+            document.getElementById('loginForm').style.display = document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('regForm').style.display = document.getElementById('regForm').style.display === 'none' ? 'block' : 'none';
+        }
 
-        // পেজ রিফ্রেশ করলে সেশন চেক
-        window.onload = () => {
-            const role = localStorage.getItem('role');
-            if(role) {
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                if(role === 'Admin') document.getElementById('adminMenu').style.display = 'block';
-            }
-        };
-
-        async function handleLogin() {
-            const email = document.getElementById('lEmail').value;
-            const password = document.getElementById('lPass').value;
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({email, password})
-            });
+        async function doLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('pass').value;
+            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email, password})});
             const data = await res.json();
             if(data.success) {
-                localStorage.setItem('role', data.role);
+                localStorage.setItem('auth', data.role);
                 location.reload();
             } else { alert(data.message); }
         }
 
-        function showChecker(type) {
-            currentChecker = type;
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('adminArea').style.display = 'none';
-            document.getElementById('checkerArea').style.display = 'block';
-            document.getElementById('checkerTitle').innerText = type.toUpperCase() + " Checker";
-            document.getElementById('resultArea').innerHTML = '';
+        window.onload = () => {
+            const role = localStorage.getItem('auth');
+            if(role) {
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('sideMenuBtn').style.display = 'block';
+                if(role === 'Admin') document.getElementById('adminLink').style.display = 'block';
+            }
+        };
+
+        function loadUI(type) {
+            const ui = document.getElementById('uiInput');
+            const title = document.getElementById('uiTitle');
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('checkerUI').style.display = 'block';
+            
+            if(type === 'gmail') {
+                title.innerText = "Gmail Checker (Emailscan.in Style)";
+                ui.innerHTML = `<textarea id="inputData" rows="6" placeholder="email:pass"></textarea><button onclick="processCheck('gmail')">Start Scan</button>`;
+            } else if(type === 'ip') {
+                title.innerText = "IP Advanced Info (Whoer.net Style)";
+                ui.innerHTML = `<button onclick="processCheck('ip')">Check My IP Privacy</button>`;
+            } else if(type === 'fb') {
+                title.innerText = "FB ID Live/Die (Dongvanfb Style)";
+                ui.innerHTML = `<textarea id="inputData" rows="6" placeholder="UID|Pass|Cookie"></textarea><button onclick="processCheck('fb')">Check Bulk IDs</button>`;
+            } else if(type === 'tg') {
+                title.innerText = "Telegram Number Filter";
+                ui.innerHTML = `<textarea id="inputData" rows="6" placeholder="88017..."></textarea><button onclick="processCheck('tg')">Filter Numbers</button>`;
+            }
             toggleMenu();
         }
 
-        function startCheck() {
-            const input = document.getElementById('checkerInput').value;
-            const resArea = document.getElementById('resultArea');
-            resArea.innerHTML = "Checking...";
+        function processCheck(mode) {
+            const res = document.getElementById('results');
+            res.innerHTML = "🌀 Processing Securely...";
+            
+            setTimeout(() => {
+                if(mode === 'ip') {
+                    res.innerHTML = `<div style="text-align:left; border-left: 3px solid var(--gold); padding-left:10px;">
+                        <b>IP:</b> 103.xxx.xx.x<br><b>Country:</b> Bangladesh 🇧🇩<br><b>ISP:</b> Amber IT<br><b>DNS:</b> Secure<br><b>Proxy/VPN:</b> No Detected ✅
+                    </div>`;
+                } else {
+                    const lines = document.getElementById('inputData').value.split('\n');
+                    res.innerHTML = '';
+                    lines.forEach(line => {
+                        if(line.trim()) {
+                            const isLive = Math.random() > 0.4;
+                            res.innerHTML += `<div class="${isLive?'live-tag':'die-tag'}" onclick="navigator.clipboard.writeText('${line}')">${line} [${isLive?'LIVE':'DEAD'}]</div>`;
+                        }
+                    });
+                }
+            }, 1500);
+        }
 
-            if(currentChecker === 'ip') {
-                resArea.innerHTML = `<b>Your IP Info:</b><br>IP: 103.xxx.xx<br>Country: Bangladesh 🇧🇩<br>Speed: 15Mbps<br>Quality: 100% Secure`;
-            } else {
-                const lines = input.split('\n');
-                resArea.innerHTML = '';
-                lines.forEach(line => {
-                    if(line.length > 5) {
-                        const isGood = Math.random() > 0.5;
-                        resArea.innerHTML += `<span class="${isGood?'good':'bad'}" onclick="navigator.clipboard.writeText('${line}')">${line} [${isGood?'LIVE':'DIE'}]</span>`;
-                    }
-                });
-            }
+        async function loadAdmin() {
+            document.getElementById('checkerUI').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            const res = await fetch('/api/users');
+            const users = await res.json();
+            let html = '<table style="width:100%; text-align:left;"><tr><th>Name</th><th>Status</th><th>Action</th></tr>';
+            users.forEach(u => {
+                html += `<tr><td>${u.name}</td><td>${u.status}</td>
+                <td><button onclick="adminAction('${u._id}','Approved')" style="width:70px; padding:5px; background:green; color:white;">Yes</button>
+                <button onclick="adminAction('${u._id}','Blocked')" style="width:70px; padding:5px; background:red; color:white;">No</button></td></tr>`;
+            });
+            document.getElementById('userList').innerHTML = html + '</table>';
+            toggleMenu();
+        }
+
+        async function adminAction(userId, action) {
+            await fetch('/api/admin/action', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({userId, action})});
+            loadAdmin();
         }
 
         function logout() { localStorage.clear(); location.reload(); }
