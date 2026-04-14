@@ -2,252 +2,207 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GOURAB CHECKER v1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOURAB SLIT MASTER V3</title>
     <style>
-        :root { --gold: #ffcc00; --bg: #030712; --card: #111827; --green: #10b981; --red: #ef4444; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; }
-        .navbar { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: #000; transition: 0.5s; z-index: 2000; border-left: 1px solid var(--gold); }
-        .sidebar.active { right: 0; }
-        .close-btn { font-size: 35px; color: var(--gold); cursor: pointer; padding: 15px; display: block; text-align: right; }
-        .menu-item { padding: 15px 25px; display: block; color: #ccc; text-decoration: none; border-bottom: 1px solid #222; cursor: pointer; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        .box { background: var(--card); padding: 25px; border-radius: 12px; margin-top: 20px; border: 1px solid #333; }
-        textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; }
-        .btn-main { width: 100%; padding: 14px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .res-line { padding: 8px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
-        .copy-btn { padding: 5px 10px; background: #333; color: var(--gold); border: 1px solid var(--gold); border-radius: 4px; cursor: pointer; font-size: 12px; }
+        :root { --gold: #ffcc00; --bg: #030712; --green: #10b981; --red: #ef4444; --white: #fff; --yellow: #facc15; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .login-box { max-width: 400px; margin: 100px auto; padding: 20px; background: #111827; border: 2px solid var(--gold); border-radius: 10px; text-align: center; }
+        input, textarea { width: 90%; padding: 12px; margin: 8px 0; background: #000; color: var(--gold); border: 1px solid #333; border-radius: 5px; }
+        .btn { width: 95%; padding: 12px; background: var(--gold); color: #000; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; }
+        .nav { background: #111827; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; }
+        .tool-box { padding: 20px; display: none; }
+        .res-container { margin-top: 15px; }
+        .res-box { padding: 12px; margin-bottom: 8px; border-radius: 5px; position: relative; }
+        .copy-btn { position: absolute; right: 8px; top: 8px; background: #333; color: #fff; border: none; padding: 4px 8px; cursor: pointer; border-radius: 3px; }
+        .welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .welcome-content { background: #111827; border: 3px solid var(--gold); padding: 30px; border-radius: 15px; text-align: center; max-width: 80%; }
+        .footer-info { margin-top: 20px; font-size: 14px; color: var(--gold); }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <div style="color: var(--gold); font-size: 20px; font-weight: bold;">GOURAB CHECKER v1</div>
-        <div id="menuBtn" onclick="toggleMenu()" style="font-size: 25px; cursor: pointer; display: none;">☰</div>
+<div id="welcomeOverlay" class="welcome-overlay">
+    <div class="welcome-content">
+        <h2 style="color:var(--gold)">[গৌরব ভাইয়ের এই সাইটে আপনাকে স্বাগতম]</h2>
+        <p>এই সাইটে আপনি আপনার প্রয়োজনের সবকিছু পেয়ে যাবেন। ভদ্রতার সাথে কাজ করুন এবং কোন সমস্যা হলে গৌরব ভাইকে বলুন। ধন্যবাদ।</p>
+        <button class="btn" onclick="closeWelcome()">কাজ শুরু করুন</button>
     </div>
+</div>
 
-    <div id="sidebar" class="sidebar">
-        <span class="close-btn" onclick="toggleMenu()">×</span>
-        <a class="menu-item" onclick="loadTool('gmail')">📧 Gmail Slit</a>
-        <a class="menu-item" onclick="loadTool('ip')">🌐 Ip Slit</a>
-        <a class="menu-item" onclick="loadTool('fb')">🔵 Facebook Slit</a>
-        <a class="menu-item" onclick="loadTool('tg')">✈️ Tg Slit</a>
-        <a class="menu-item" onclick="logout()" style="color: var(--red);">🚪 Logout</a>
-    </div>
-
-    <div class="container">
-        <div id="welcomeUI" class="box" style="display:none; text-align:center;">
-            <h2 style="color: var(--gold);">স্বাগতম!</h2>
-            <p>গৌরব ভাইয়ের এই সাইটে আপনাকে স্বাগতম। এই সাইটে আপনি আপনার প্রয়োজনের সবকিছু পেয়ে যাবেন। ভদ্রতার সাথে কাজ করুন এবং কোন সমস্যা হলে গৌরব ভাইকে বলুন। ধন্যবাদ।</p>
-            <button class="btn-main" onclick="startApp()">কাজ শুরু করুন</button>
+<div id="authPage">
+    <div class="login-box">
+        <h2 style="color:var(--gold)">GOURAB SLIT V3</h2>
+        <div id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPass" placeholder="Password">
+            <button class="btn" onclick="handleLogin()">Login</button>
+            <p onclick="toggleAuth(false)" style="cursor:pointer; margin-top:15px;">নতুন অ্যাকাউন্ট? রেজিস্ট্রেশন করুন</p>
         </div>
-
-        <div id="checkerUI" style="display:none;">
-            <div class="box">
-                <h3 id="toolTitle" style="color: var(--gold);">Select Tool From Menu</h3>
-                <div id="toolBody"></div>
-                <div id="results" style="margin-top: 20px;"></div>
-                <div id="copyActions" style="display:none; margin-top: 15px; display: flex; gap: 5px; flex-wrap: wrap;">
-                    <button class="copy-btn" onclick="copyResult('LIVE')">Copy Good</button>
-                    <button class="copy-btn" onclick="copyResult('DIE')">Copy Bad</button>
-                    <button class="copy-btn" onclick="copyResult('VERIFY')">Copy Verify</button>
-                </div>
-            </div>
+        <div id="regForm" style="display:none;">
+            <input type="text" id="regName" placeholder="Full Name">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPass" placeholder="Password">
+            <button class="btn" onclick="handleRegister()">Register</button>
+            <p onclick="toggleAuth(true)" style="cursor:pointer; margin-top:15px;">লগইন করুন</p>
+        </div>
+        <div class="footer-info">
+            Develop By gourab <br> Number: 01944035239
         </div>
     </div>
+</div>
 
-    <script>
-        let scanResults = [];
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-        
-        function startApp() {
-            document.getElementById('welcomeUI').style.display = 'none';
-            document.getElementById('checkerUI').style.display = 'block';
-            document.getElementById('menuBtn').style.display = 'block';
-        }
-
-        // IP Slit (Whoer Style)
-        async function loadIP() {
-            const res = document.getElementById('results');
-            res.innerHTML = "🌀 <b>Fetching IP Details...</b>";
-            const data = await fetch('https://ipapi.co/json/').then(r => r.json());
-            const now = new Date();
-            
-            res.innerHTML = `
-                <div class="box" style="border-color: var(--gold);">
-                    <div class="res-line"><span>Country: ${data.country_name}</span> <button class="copy-btn" onclick="copyText('${data.country_name}')">Copy</button></div>
-                    <div class="res-line"><span>Region: ${data.region}</span> <button class="copy-btn" onclick="copyText('${data.region}')">Copy</button></div>
-                    <div class="res-line"><span>Timezone: ${data.timezone}</span></div>
-                    <div class="res-line"><span>Connect Time: ${now.toLocaleTimeString()}</span></div>
-                    <div class="res-line"><span>Device: ${navigator.userAgent.includes('iPhone') ? 'iPhone (iOS)' : 'Android'}</span></div>
-                    <div class="res-line"><span>Location: ${data.city}, ${data.country}</span> <button class="copy-btn" onclick="copyText('${data.city}')">Copy</button></div>
-                    <div class="res-line"><span>VPN/Proxy: ${data.org.includes('VPN') ? 'YES' : 'NO'}</span></div>
-                </div>
-            `;
-        }
-
-        async function runScan(type) {
-            const lines = document.getElementById('inputData').value.split('\n');
-            const resDiv = document.getElementById('results');
-            resDiv.innerHTML = "🚀 Scanning Started...";
-            scanResults = [];
-
-            for (let line of lines) {
-                if (line.trim()) {
-                    const response = await fetch('/api/check', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ inputData: line.trim(), type: type })
-                    });
-                    const result = await response.json();
-                    scanResults.push({ data: line, status: result.status });
-                    
-                    let color = result.status === 'LIVE' ? 'var(--green)' : 'var(--red)';
-                    resDiv.innerHTML += `<div style="color:${color}">[${result.status}] ${line}</div>`;
-                }
-            }
-            document.getElementById('copyActions').style.display = 'flex';
-        }
-
-        function copyResult(status) {
-            const filtered = scanResults.filter(r => r.status === status).map(r => r.data).join('\n');
-            navigator.clipboard.writeText(filtered);
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>GOURAB CHECKER v1</title>
-    <style>
-        :root { --gold: #ffcc00; --bg: #030712; --card: #111827; --green: #10b981; --red: #ef4444; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; }
-        .nav { background: var(--card); padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #000; transition: 0.4s; z-index: 2000; border-left: 1px solid var(--gold); }
-        .sidebar.active { right: 0; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        .box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-top: 20px; }
-        textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; box-sizing: border-box; }
-        .btn-main { width: 100%; padding: 12px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 8px; margin-top: 10px; }
-        .ip-detail { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
-        .copy-mini { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 2px 6px; cursor: pointer; border-radius: 4px; font-size: 10px; }
-        .status-good { color: var(--green); font-weight: bold; border-bottom: 1px solid #222; padding: 5px; }
-        .status-bad { color: var(--red); font-weight: bold; border-bottom: 1px solid #222; padding: 5px; }
-    </style>
-</head>
-<body>
-
+<div id="mainApp" style="display:none;">
     <div class="nav">
-        <div style="color: var(--gold); font-weight: bold; font-size: 18px;">GOURAB CHECKER v1</div>
-        <div id="menuIcon" onclick="toggleMenu()" style="cursor:pointer; font-size: 24px; display:none;">☰</div>
+        <span id="displayRole">User Profile</span>
+        <span>GOURAB MASTER SLIT</span>
+        <button onclick="location.reload()" style="background:var(--red); color:white; border:none; padding:5px 10px; border-radius:3px;">Reload</button>
     </div>
 
-    <div id="sidebar" class="sidebar">
-        <div style="text-align:right; padding:15px; font-size:30px; color:var(--gold); cursor:pointer;" onclick="toggleMenu()">×</div>
-        <a href="#" onclick="loadTool('gmail')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">📧 Gmail Slit</a>
-        <a href="#" onclick="loadTool('ip')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">🌐 Ip Slit</a>
-        <a href="#" onclick="loadTool('fb')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">🔵 Facebook Slit</a>
-        <a href="#" onclick="loadTool('tg')" style="display:block; padding:15px; color:white; text-decoration:none; border-bottom:1px solid #222;">✈️ Tg Slit</a>
+    <div style="padding:15px; display:flex; flex-wrap:wrap; gap:10px;">
+        <button class="btn" style="width:auto;" onclick="showTool('gmail')">Gmail Slit</button>
+        <button class="btn" style="width:auto;" onclick="showTool('ip')">Ip Slit</button>
+        <button class="btn" style="width:auto;" onclick="showTool('fb')">Facbook Slit</button>
+        <button class="btn" style="width:auto;" onclick="showTool('tg')">Tg Slit</button>
+        <button class="btn" style="width:auto; display:none; background:var(--white);" id="adminNav" onclick="showTool('admin')">Admin Panel</button>
     </div>
 
-    <div class="container">
-        <div id="welcomeScreen" class="box" style="display:none; text-align:center;">
-            <h2 style="color:var(--gold);">স্বাগতম!</h2>
-            <p>গৌরব ভাইয়ের এই সাইটে আপনাকে স্বাগতম। এই সাইটে আপনি আপনার প্রয়োজনের সবকিছু পেয়ে যাবেন। ভদ্রতার সাথে কাজ করুন এবং কোন সমস্যা হলে গৌরব ভাইকে বলুন। ধন্যবাদ।</p>
-            <button class="btn-main" onclick="openApp()">কাজ শুরু করুন</button>
-        </div>
-
-        <div id="mainApp" style="display:none;">
-            <div class="box">
-                <h3 id="toolTitle" style="color:var(--gold);">Select a Tool</h3>
-                <div id="toolBody"></div>
-                <div id="results" style="margin-top:20px;"></div>
-                <div id="copyActions" style="display:none; gap:10px; margin-top:15px;">
-                    <button class="btn-main" style="flex:1; background:var(--green); color:white;" onclick="copyByStatus('LIVE')">Copy Good</button>
-                    <button class="btn-main" style="flex:1; background:var(--red); color:white;" onclick="copyByStatus('DIE')">Copy Bad</button>
-                </div>
-            </div>
+    <div id="gmailSlit" class="tool-box">
+        <h3>Gmail Slit (100% Authentic)</h3>
+        <textarea id="gmailInput" placeholder="Enter list..."></textarea>
+        <button class="btn" onclick="processSlit('gmail')">Check Now</button>
+        <div class="res-container">
+            <div class="res-box" style="background:var(--green)">Good: <span id="gmail_good"></span> <button class="copy-btn" onclick="copy('gmail_good')">Copy</button></div>
+            <div class="res-box" style="background:var(--red)">Bad: <span id="gmail_bad"></span> <button class="copy-btn" onclick="copy('gmail_bad')">Copy</button></div>
+            <div class="res-box" style="background:var(--white); color:black;">Non-Exist: <span id="gmail_non"></span> <button class="copy-btn" onclick="copy('gmail_non')">Copy</button></div>
+            <div class="res-box" style="background:var(--yellow); color:black;">Verified: <span id="gmail_ver"></span> <button class="copy-btn" onclick="copy('gmail_ver')">Copy</button></div>
         </div>
     </div>
 
-    <script>
-        let currentResults = [];
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-        function openApp() { document.getElementById('welcomeScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; }
+    <div id="ipSlit" class="tool-box">
+        <h3>Ip Slit (Whoer Quality)</h3>
+        <button class="btn" onclick="checkIpFull()">Detect My IP Info</button>
+        <div id="ipDetails" style="margin-top:20px; line-height:2; background:#111827; padding:15px; border:1px solid var(--gold);"></div>
+    </div>
 
-        async function loadTool(name) {
-            const body = document.getElementById('toolBody');
-            const title = document.getElementById('toolTitle');
-            const resDiv = document.getElementById('results');
-            resDiv.innerHTML = ''; document.getElementById('copyActions').style.display = 'none';
-            toggleMenu();
+    <div id="adminPanel" class="tool-box">
+        <h3>User Control (Admin Only)</h3>
+        <div id="userListDisplay"></div>
+    </div>
 
-            if (name === 'ip') {
-                title.innerText = "IP SLIT (WHOER STYLE)";
-                body.innerHTML = `<button class="btn-main" onclick="checkIpDetails()">Check My Ip Privacy</button>`;
-            } else {
-                title.innerText = name.toUpperCase() + " SLIT";
-                body.innerHTML = `<textarea id="inputData" rows="8" placeholder="Enter List Here..."></textarea>
-                <button class="btn-main" onclick="startScan('${name}')">Start Checking</button>`;
-            }
-        }
+    <div style="text-align:center; padding:20px; border-top:1px solid #333; margin-top:50px;">
+        <p>Admin: <a href="https://facebook.com/your-id" style="color:var(--gold)">Facebook</a> | <a href="https://t.me/your-id" style="color:var(--gold)">Telegram</a></p>
+    </div>
+</div>
 
-        async function checkIpDetails() {
-            const res = document.getElementById('results');
-            res.innerHTML = "🌀 Fetching Pure Data...";
-            const data = await fetch('https://ipapi.co/json/').then(r => r.json());
-            const speed = (Math.random() * 50 + 20).toFixed(2);
-            const now = new Date().toLocaleTimeString();
+<script>
+    let userData = null;
 
-            res.innerHTML = `
-                <div class="box" style="border-color:var(--gold); padding:10px;">
-                    <div class="ip-detail"><span>Country: ${data.country_name} (${data.country_code})</span> <button class="copy-mini" onclick="copyTxt('${data.country_name}')">Copy</button></div>
-                    <div class="ip-detail"><span>Region: ${data.region}</span> <button class="copy-mini" onclick="copyTxt('${data.region}')">Copy</button></div>
-                    <div class="ip-detail"><span>Location: ${data.city}</span> <button class="copy-mini" onclick="copyTxt('${data.city}')">Copy</button></div>
-                    <div class="ip-detail"><span>Device: ${navigator.userAgent.includes('Android') ? 'Android' : 'iOS'}</span></div>
-                    <div class="ip-detail"><span>Time: ${now}</span></div>
-                    <div class="ip-detail"><span>VPN/IP Connect: ${data.org.includes('VPN') ? 'YES' : 'NO'}</span></div>
-                    <div class="ip-detail"><span>Percentage: 100% Secure</span></div>
-                    <div class="ip-detail"><span>Speed: ${speed} Mbps</span></div>
-                </div>
-            `;
-        }
+    function toggleAuth(showLogin) {
+        document.getElementById('loginForm').style.display = showLogin ? 'block' : 'none';
+        document.getElementById('regForm').style.display = showLogin ? 'none' : 'block';
+    }
 
-        async function startScan(type) {
-            const lines = document.getElementById('inputData').value.split('\n').filter(l => l.trim());
-            const resDiv = document.getElementById('results');
-            resDiv.innerHTML = "🚀 Scanning...";
-            currentResults = [];
+    async function handleLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPass').value;
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(data.success) {
+            userData = data.user;
+            document.getElementById('authPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('welcomeOverlay').style.display = 'flex';
+            document.getElementById('displayRole').innerText = `Role: ${userData.role}`;
+            if(userData.role === 'admin') document.getElementById('adminNav').style.display = 'inline-block';
+        } else alert(data.message);
+    }
 
-            for (let line of lines) {
-                const response = await fetch('/api/check', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ input: line.trim(), type: type })
-                });
-                const data = await response.json();
-                currentResults.push({ input: line.trim(), status: data.status });
-                
-                const cssClass = data.status === 'LIVE' ? 'status-good' : 'status-bad';
-                resDiv.innerHTML += `<div class="${cssClass}">[${data.status}] ${line}</div>`;
-            }
-            document.getElementById('copyActions').style.display = 'flex';
-        }
-
-        function copyByStatus(status) {
-            const list = currentResults.filter(r => r.status === status).map(r => r.input).join('\n');
-            navigator.clipboard.writeText(list);
-            alert(status + " List Copied!");
-        }
-
-        function copyTxt(t) { navigator.clipboard.writeText(t); alert("Copied!"); }
-
-        // Auth Check
-        window.onload = () => {
-            if (localStorage.getItem('role')) {
-                document.getElementById('welcomeScreen').style.display = 'block';
-                document.getElementById('menuIcon').style.display = 'block';
-            }
+    async function handleRegister() {
+        const body = {
+            name: document.getElementById('regName').value,
+            email: document.getElementById('regEmail').value,
+            password: document.getElementById('regPass').value
         };
-    </script>
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if(data.success) {
+            alert("রেজিস্টার সম্পন্ন! গৌরব ভাইকে এসএমএস দিন।");
+            toggleAuth(true);
+        } else alert(data.message);
+    }
+
+    function closeWelcome() { document.getElementById('welcomeOverlay').style.display = 'none'; }
+
+    function showTool(tool) {
+        const tools = ['gmailSlit', 'ipSlit', 'adminPanel'];
+        tools.forEach(t => document.getElementById(t).style.display = 'none');
+        if(tool === 'gmail') document.getElementById('gmailSlit').style.display = 'block';
+        if(tool === 'ip') document.getElementById('ipSlit').style.display = 'block';
+        if(tool === 'admin') {
+            document.getElementById('adminPanel').style.display = 'block';
+            loadUserList();
+        }
+    }
+
+    async function processSlit(type) {
+        const input = document.getElementById('gmailInput').value;
+        if(!input) return;
+        const res = await fetch('/api/check-slit', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ input, type })
+        });
+        const data = await res.json();
+        const idMap = { 'Good': 'gmail_good', 'Bad': 'gmail_bad', 'Non-Exist': 'gmail_non', 'Verified': 'gmail_ver' };
+        document.getElementById(idMap[data.status]).innerText = input;
+    }
+
+    async function checkIpFull() {
+        const res = await fetch('https://ipapi.co/json/');
+        const d = await res.json();
+        document.getElementById('ipDetails').innerHTML = `
+            <b>Country:</b> ${d.country_name} (Code: ${d.country_code}) <br>
+            <b>Region:</b> ${d.region} <br>
+            <b>Time:</b> ${new Date().toLocaleTimeString()} <br>
+            <b>Device:</b> ${navigator.userAgent.includes('Android') ? 'Android' : 'iOS/iPhone'} <br>
+            <b>VPN Status:</b> ${d.org.toLowerCase().includes('vpn') ? 'YES' : 'NO'} <br>
+            <b>Score:</b> 100% Authentic Connection
+        `;
+    }
+
+    function copy(id) {
+        const text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text);
+        alert("Copied!");
+    }
+
+    async function loadUserList() {
+        const res = await fetch('/api/users');
+        const users = await res.json();
+        let html = '<table border="1" width="100%"><tr><th>Name</th><th>Status</th><th>Action</th></tr>';
+        users.forEach(u => {
+            html += `<tr><td>${u.name}</td><td>${u.status}</td><td><button onclick="updateUser('${u._id}', 'active')">Active</button> <button onclick="updateUser('${u._id}', 'blocked')">Block</button></td></tr>`;
+        });
+        document.getElementById('userListDisplay').innerHTML = html + '</table>';
+    }
+
+    async function updateUser(id, status) {
+        await fetch('/api/user-update', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id, status })
+        });
+        loadUserList();
+    }
+</script>
 </body>
 </html>
